@@ -5,13 +5,12 @@
 #PBS -q new_nodes
 #PBS -J 1-985
 #PBS -l walltime=48:00:00
-#PBS -l select=1:ncpus=8:mem=70gb
+#PBS -l select=1:ncpus=8:mem=80gb
 #PBS -o log.simSNPs
 #PBS -e err.simSNPs
 
 cd $PBS_O_WORKDIR
 nct=8
-
 
 #hdf5="/lustre/scratch/projects/the1001genomes/rahul/101.VCF_1001G_1135/1135g_SNP_BIALLELIC.hetfiltered.snpmat.6oct2015.hdf5"
 #hdf5_acc="/lustre/scratch/projects/the1001genomes/rahul/101.VCF_1001G_1135/1135g_SNP_BIALLELIC.hetfiltered.snpmat.6oct2015.acc.hdf5"
@@ -43,7 +42,7 @@ for (( i=0; i < $numSims; i++ ))
 do
 	mkdir -p SNPs_${nSNPs[$i]}
 	mkdir -p logs/logs_SNPs_${nSNPs[$i]}
-	python ~/MyScripts/simulateSNPsAcc/08_SimulateSNPsAcc/01_SimulateSNPsperAcc.py -d $hdf5 -e $hdf5_acc -a $accID -n ${nSNPs[$i]} -o SNPs_${nSNPs[$i]}/${accID}_${nSNPs[$i]}.ScoreAcc.txt > logs/logs_SNPs_${nSNPs[$i]}/logs.${accID} 2>&1 & 
+	python ~/MyScripts/simulateSNPsAcc/08_SimulateSNPsAcc/01_SimulateSNPsperAcc.py -d $hdf5 -e $hdf5_acc -a $accID -n ${nSNPs[$i]} -o SNPs_${nSNPs[$i]}/${accID}_${nSNPs[$i]}.ScoreAcc.txt > logs/logs_SNPs_${nSNPs[$i]}/logs.${accID} 2>&1 &
 	if [ $(($i % 8)) == 0 ]
 	then
 		wait

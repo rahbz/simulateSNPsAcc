@@ -15,38 +15,6 @@ from pygwas.core import genotype
 import scipy
 from snpmatch.core import snpmatch
 
-def likeliTest(n, y, e):
-  p = 0.99999999
-  if n > 0 and n != y:
-    pS = float(y)/n
-    a = y * np.log(pS/p)
-    b = (n - y) * np.log((1-pS)/(1-p))
-    return(a+b)
-  elif n == y and n > 0:
-    y = e * n
-    a = y * np.log(e/p)
-    b = (n - y) * np.log((1-e)/(1-p))
-    return(a+b)
-  else:
-    return np.nan
-
-def calculate_likelihoods(ScoreList, NumInfoSites, error):
-  num_lines = len(ScoreList)
-  LikeLiHoods = [likeliTest(NumInfoSites[i], int(ScoreList[i]), error) for i in range(num_lines)]
-  LikeLiHoods = np.array(LikeLiHoods).astype("float")
-  TopHit = np.amin(LikeLiHoods)
-  LikeLiHoodRatios = [LikeLiHoods[i]/TopHit for i in range(num_lines)]
-  LikeLiHoodRatios = np.array(LikeLiHoodRatios).astype("float")
-  return (LikeLiHoods, LikeLiHoodRatios)
-
-def print_out_table(outFile, GenotypeData, ScoreList, NumInfoSites, NumMatSNPs, error):
-  (LikeLiHoods, LikeLiHoodRatios) = calculate_likelihoods(ScoreList, NumInfoSites, error)
-  out = open(outFile, 'w')
-  for i in range(len(GenotypeData.accessions)):
-    score = float(ScoreList[i])/NumInfoSites[i]
-    out.write("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (GenotypeData.accessions[i], int(ScoreList[i]), NumInfoSites[i], score, LikeLiHoods[i], LikeLiHoodRatios[i], NumMatSNPs, "NA"))
-  out.close()
-
 
 #__________________________________________
 inOptions = OptionParser()
@@ -55,7 +23,7 @@ inOptions.add_option("-a", "--acc_to_check", dest="accID", help="Index of the ac
 inOptions.add_option("-d", "--hdf5_file", dest="hdf5File", help="Path to SNP matrix given in binary hdf5 file", type="string")
 inOptions.add_option("-e", "--hdf5_acc_file", dest="hdf5accFile", help="Path to SNP matrix given in binary hdf5 file", type="string")
 inOptions.add_option("-o", "--output", dest="outFile", help="Output file with the probability scores", type="string")
-inOptions.add_option("-s", "--error_rate", dest="error", help="Maximum score which is considered to be for top hit accession", default=0.9999, type="float")
+inOptions.add_option("-s", "--error_rate", dest="error", help="Maximum score which is considered to be for top hit accession", default=0.01, type="float")
 
 (options, args) = inOptions.parse_args()
 logging.basicConfig(format='%(levelname)s:%(asctime)s:  %(message)s', level=logging.DEBUG)
@@ -90,10 +58,8 @@ for i in range(0, len(sampleSNPs), chunk_size):
 
 logging.info("writing data!")
 
-print_out_table(options.outFile, GenotypeData, ScoreList, NumInfoSites, numSNPs, options.error)
+ScoreList = np.array([random.uniform(ScoreList[i] - (ScoreList[i] * options.error), ScoreList[i]) for i in range(num_lines)], dtype=int)
+
+snpmatch.print_out_table(options.outFile, GenotypeData.accessions, ScoreList, NumInfoSites, numSNPs, "NA")
 
 logging.info("finished!")
-
-
-
-
