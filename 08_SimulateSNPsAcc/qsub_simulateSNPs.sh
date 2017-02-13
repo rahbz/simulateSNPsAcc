@@ -42,7 +42,7 @@ for (( i=0; i < $numSims; i++ ))
 do
 	mkdir -p SNPs_${nSNPs[$i]}
 	mkdir -p logs/logs_SNPs_${nSNPs[$i]}
-	python ~/MyScripts/simulateSNPsAcc/08_SimulateSNPsAcc/01_SimulateSNPsperAcc.py -d $hdf5 -e $hdf5_acc -a $accID -n ${nSNPs[$i]} -o SNPs_${nSNPs[$i]}/${accID}_${nSNPs[$i]}.ScoreAcc.txt > logs/logs_SNPs_${nSNPs[$i]}/logs.${accID} 2>&1 &
+	python ~/MyScripts/simulateSNPsAcc/08_SimulateSNPsAcc/01_SimulateSNPsperAcc.py  -d $hdf5 -e $hdf5_acc -a $accID -n ${nSNPs[$i]} -o SNPs_${nSNPs[$i]}/${accID}_${nSNPs[$i]}.ScoreAcc.txt > logs/logs_SNPs_${nSNPs[$i]}/logs.${accID} 2>&1 &
 	if [ $(($i % 8)) == 0 ]
 	then
 		wait

@@ -23,7 +23,7 @@ inOptions.add_option("-a", "--acc_to_check", dest="accID", help="Index of the ac
 inOptions.add_option("-d", "--hdf5_file", dest="hdf5File", help="Path to SNP matrix given in binary hdf5 file", type="string")
 inOptions.add_option("-e", "--hdf5_acc_file", dest="hdf5accFile", help="Path to SNP matrix given in binary hdf5 file", type="string")
 inOptions.add_option("-o", "--output", dest="outFile", help="Output file with the probability scores", type="string")
-inOptions.add_option("-s", "--error_rate", dest="error", help="Maximum score which is considered to be for top hit accession", default=0.01, type="float")
+inOptions.add_option("-s", "--error_rate", dest="error", help="Maximum score which is considered to be for top hit accession", default=0.001, type="float")
 
 (options, args) = inOptions.parse_args()
 logging.basicConfig(format='%(levelname)s:%(asctime)s:  %(message)s', level=logging.DEBUG)
